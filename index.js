@@ -20,12 +20,12 @@ app.use(
 );
 mongoose
   .connect(
-    "mongodb://127.0.0.1:27017/blockchain?directConnection=true&serverSelectionTimeoutMS=2000"
+    `mongodb+srv://seedmoney:seed123@cluster0.1qfy5.mongodb.net/seedmoney?retryWrites=true&w=majority`
   )
   .then(() => {
     app.listen(PORT, () => {
       console.log(
-        `server is running on port ${PORT}.... mongodb running on port 27017....`
+        `server is running on port ${PORT}.... mongodb connected to server....`
       );
     });
   });
