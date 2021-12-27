@@ -16,6 +16,8 @@ const Info = new GraphQLObjectType({
     fat: { type: GraphQLString },
     packed_date: { type: GraphQLString },
     hash: { type: GraphQLString },
+    prehash: { type: GraphQLString },
+    tid: { type: GraphQLString },
   }),
 });
 export default Info;

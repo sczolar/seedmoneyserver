@@ -47,25 +47,61 @@ const rootquery = new GraphQLObjectType({
       },
     },
     //get info by farmor _id
-    getinfoid: {
-      type: Infoschema,
+    getTid: {
+      type: GraphQLString,
       args: {
-        _id: { type: GraphQLID },
-        hash: { type: GraphQLString },
+        tid: { type: GraphQLID },
       },
-      resolve: (parent, args) => {
-        const decrypt = Decrypt(args.hash);
-        console.log(decrypt);
-        return Infomodel.findOne({ _id: args._id });
+      resolve: async (parent, args, req) => {
+        if (!req.roll || req.roll === "1") {
+          throw new Error("user unauthorized");
+        }
+        const tinfo = await Infomodel.findOne({ tid: args.tid });
+        if (tinfo && (req.roll === "2" || req.roll === "3")) {
+          return "verified";
+        }
+        return null;
       },
     },
-    // //get information about the farmor
-    // getmilk: {
-    //   type: new GraphQLList(Milkschema),
-    //   resolve: () => {
-    //     return Milkmodel.find();
-    //   },
-    // },
+    //view entire transaction
+    transdetail: {
+      type: new GraphQLList(Infoschema),
+      args: {
+        tid: { type: GraphQLString },
+        pin: { type: GraphQLString },
+      },
+      resolve: async (parent, args, req) => {
+        if (!req.roll || req.roll !== "3") {
+          throw new Error("unauthorized to view transaction detail");
+        }
+        let prehash = "";
+        let block = [];
+        //check for the id and pin
+        if (args.tid) {
+          let trace = await Infomodel.findOne({ tid: args.tid });
+          //trace is avilable
+          if (trace) {
+            let i = 0;
+            //process will continue till the pre is 0
+            while (prehash !== "0") {
+              block[i] = trace;
+              prehash = trace.prehash;
+              //pre get 0 loop will break
+              if (prehash === "0") {
+                break;
+              }
+              trace = await Infomodel.findOne({ hash: prehash });
+              i++;
+            }
+            return block;
+          } else {
+            throw new Error("transaction id verification failed");
+          }
+        } else {
+          throw new Error("transaction id or pin null ");
+        }
+      },
+    },
   }),
 });
 export default rootquery;

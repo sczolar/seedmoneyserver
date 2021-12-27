@@ -15,6 +15,8 @@ const Infomodel = new Schema({
   fat: { type: String },
   packed_date: { type: String },
   hash: { type: String },
+  prehash: { type: String },
+  tid: { type: String },
 });
 
 const info = mongoose.model("informations", Infomodel);
