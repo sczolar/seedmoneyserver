@@ -22,7 +22,7 @@ app.use(
 );
 mongoose
   .connect(
-    `mongodb+srv://seedmoney:seed123@cluster0.1qfy5.mongodb.net/seedmoney?retryWrites=true&w=majority`
+    `mongodb+srv://raghubiker:Raghu007@cluster0.rq8jt.mongodb.net/seedmoney?retryWrites=true&w=majority`
   )
   .then(() => {
     app.listen(PORT, () => {
